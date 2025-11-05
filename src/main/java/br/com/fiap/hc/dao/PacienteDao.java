@@ -24,15 +24,14 @@ public class PacienteDao {
         try (Connection conexao = dataSource.getConnection()) {
 
             PreparedStatement stmt = conexao.prepareStatement("INSERT INTO T_HC_PACIENTE (ID_PACIENTE, NM_NOME, CD_CPF, DT_NASCIMENTO, NR_TELEFONE, DS_EMAIL, ID_ENDERECO) \" +\n" +
-                    "\"VALUES (?, ?, ?, ?, ?, ?, ?)");
+                    "VALUES (SQ_HC_PACIENTE.nextval, ?, ?, ?, ?, ?, ?)", new String[]{"ID_PACIENTE"});
 
-            stmt.setInt(1, paciente.getIdPaciente());
-            stmt.setString(2, paciente.getNome());
-            stmt.setString(3, paciente.getCpf());
-            stmt.setDate(4, java.sql.Date.valueOf(paciente.getDataNascimeto()));
-            stmt.setString(5, paciente.getTelefone());
-            stmt.setString(6, paciente.getEmail());
-            stmt.setInt(7, paciente.getEndereco().getIdEndereco());
+            stmt.setString(1, paciente.getNome());
+            stmt.setString(2, paciente.getCpf());
+            stmt.setDate(3, java.sql.Date.valueOf(paciente.getDataNascimeto()));
+            stmt.setString(4, paciente.getTelefone());
+            stmt.setString(5, paciente.getEmail());
+            stmt.setInt(6, paciente.getEndereco().getIdEndereco());
             stmt.executeUpdate();
 
             ResultSet resultSet = stmt.getGeneratedKeys();

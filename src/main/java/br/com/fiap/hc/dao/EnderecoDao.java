@@ -24,16 +24,15 @@ public class EnderecoDao {
         try (Connection conexao = dataSource.getConnection()) {
 
             PreparedStatement stmt = conexao.prepareStatement("INSERT INTO T_HC_ENDERECO (ID_ENDERECO, DS_LOGRADOURO, NR_NUMERO, DS_COMPLEMENTO, NM_BAIRRO, NM_CIDADE, SG_ESTADO, NR_CEP) +" +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                    "VALUES (SQ_HC_ENDERECO.nextval, ?, ?, ?, ?, ?, ?, ?)", new String[]{"ID_ENDERECO"});
 
-            stmt.setInt(1, endereco.getIdEndereco());
-            stmt.setString(2, endereco.getLogradouro());
-            stmt.setInt(3, endereco.getNumero());
-            stmt.setString(4, endereco.getComplemento());
-            stmt.setString(5, endereco.getBairro());
-            stmt.setString(6, endereco.getCidade());
-            stmt.setString(7, endereco.getEstado());
-            stmt.setString(8, endereco.getCep());
+            stmt.setString(1, endereco.getLogradouro());
+            stmt.setInt(2, endereco.getNumero());
+            stmt.setString(3, endereco.getComplemento());
+            stmt.setString(4, endereco.getBairro());
+            stmt.setString(5, endereco.getCidade());
+            stmt.setString(6, endereco.getEstado());
+            stmt.setString(7, endereco.getCep());
             stmt.executeUpdate();
 
             ResultSet resultSet = stmt.getGeneratedKeys();

@@ -53,19 +53,20 @@ public class MedicoDao {
     public void cadastrarMedico(Medico medico) throws SQLException {
         try (Connection conexao = dataSource.getConnection()){
             PreparedStatement stmt = conexao.prepareStatement(
-                    "INSERT INTO T_HC_MEDICO (ID_MEDICO, NM_MEDICO, NR_CRM, DS_ESPECIALIDADE, DS_EMAIL, NR_TELEFONE) VALUES (?, ?, ?, ?, ?, ?)");
+                    "INSERT INTO T_HC_MEDICO (ID_MEDICO, NM_MEDICO, NR_CRM, DS_ESPECIALIDADE, DS_EMAIL, NR_TELEFONE)" +
+                            " VALUES (SQ_HC_MEDICO.nextval, ?, ?, ?, ?, ?)", new String[]{"ID_MEDICO"});
 
-            stmt.setInt(1, medico.getIdMedico());
-            stmt.setString(2, medico.getNomeM());
-            stmt.setString(3, medico.getCrm());
-            stmt.setString(4, medico.getEspecialidade());
-            stmt.setString(5, medico.getEmail());
-            stmt.setString(6, medico.getTelefone());
+            stmt.setString(1, medico.getNomeM());
+            stmt.setString(2, medico.getCrm());
+            stmt.setString(3, medico.getEspecialidade());
+            stmt.setString(4, medico.getEmail());
+            stmt.setString(5, medico.getTelefone());
 
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next())
                 medico.setIdMedico(rs.getInt(1));
+
         } catch (SQLException e) {
             System.out.println("Erro ao cadastrar médico: " + e.getMessage());
             throw e;

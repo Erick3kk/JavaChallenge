@@ -27,13 +27,12 @@ public class ReceitaDao {
         try (Connection conexao = dataSource.getConnection()) {
 
             PreparedStatement stmt = conexao.prepareStatement("INSERT INTO T_HC_RECEITA (ID_RECEITA, DS_MEDICAMENTO, DS_DOSAGEM, DT_EMISSAO, ID_CONSULTA) \" +\n" +
-                    "                        \"VALUES (?, ?, ?, ?, ?)");
+                                        "VALUES (SQ_HC_RECEITA.nextval, ?, ?, ?, ?)", new String[]{"ID_RECEITA"});
 
-            stmt.setInt(1, receita.getIdReceita());
-            stmt.setString(2, receita.getMedicamento());
-            stmt.setString(3, receita.getDosagem());
-            stmt.setDate(4, new java.sql.Date(receita.getDataEmissao().getTime()));
-            stmt.setInt(5, receita.getConsulta().getIdConsulta());
+            stmt.setString(1, receita.getMedicamento());
+            stmt.setString(2, receita.getDosagem());
+            stmt.setDate(3, new java.sql.Date(receita.getDataEmissao().getTime()));
+            stmt.setInt(4, receita.getConsulta().getIdConsulta());
             stmt.executeUpdate();
 
             ResultSet resultSet = stmt.getGeneratedKeys();

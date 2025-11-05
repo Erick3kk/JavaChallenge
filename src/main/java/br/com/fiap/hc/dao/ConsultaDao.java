@@ -35,18 +35,17 @@ public class ConsultaDao {
     public void cadastrar(Consulta consulta) throws SQLException {
         try (Connection conexao = dataSource.getConnection()) {
 
-            PreparedStatement stmt = conexao.prepareStatement("INSERT INTO T_HC_CONSULTA (ID_CONSULTA, DT_HORA, ST_STATUS, DS_AREA_MEDICA, ID_PACIENTE, ID_MEDICO) VALUES (?, ?, ?, ?, ?, ?)");
+            PreparedStatement stmt = conexao.prepareStatement("INSERT INTO T_HC_CONSULTA (ID_CONSULTA, DT_HORA, ST_STATUS, DS_AREA_MEDICA, ID_PACIENTE, ID_MEDICO) " +
+                    "VALUES (SQ_HC_CONSULTA.nextval, ?, ?, ?, ?, ?)", new String[]{"ID_CONSULTA"});
 
-            stmt.setInt(1, consulta.getIdConsulta());
-            stmt.setTimestamp(2, new Timestamp(consulta.getDataHora().getTime()));
-            stmt.setString(3, consulta.getStatus());
-            stmt.setString(4, consulta.getAreaMedica());
-            stmt.setInt(5, consulta.getPaciente().getIdPaciente());
-            stmt.setInt(6, consulta.getMedico().getIdMedico());
+            stmt.setTimestamp(1, new Timestamp(consulta.getDataHora().getTime()));
+            stmt.setString(2, consulta.getStatus());
+            stmt.setString(3, consulta.getAreaMedica());
+            stmt.setInt(4, consulta.getPaciente().getIdPaciente());
+            stmt.setInt(5, consulta.getMedico().getIdMedico());
 
             stmt.executeUpdate();
 
-            ResultSet resultSet = stmt.getGeneratedKeys();
 
             int rowsAffected = stmt.executeUpdate();
             System.out.println("Consulta cadastrada com sucesso. Linhas afetadas: " + rowsAffected);

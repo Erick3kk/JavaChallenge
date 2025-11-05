@@ -1,11 +1,11 @@
 package br.com.fiap.hc.resource;
 
-import br.com.fiap.hc.dao.PacienteDao;
-import br.com.fiap.hc.dto.paciente.AtualizarPacienteDto;
-import br.com.fiap.hc.dto.paciente.CadastroPacienteDto;
-import br.com.fiap.hc.dto.paciente.DetalhesPacienteDto;
+import br.com.fiap.hc.dao.ReceitaDao;
+import br.com.fiap.hc.dto.receita.AtualizarReceitaDto;
+import br.com.fiap.hc.dto.receita.CadastroReceitaDto;
+import br.com.fiap.hc.dto.receita.DetalhesReceitaDto;
 import br.com.fiap.hc.exception.EntidadeNaoEncontradaException;
-import br.com.fiap.hc.model.Paciente;
+import br.com.fiap.hc.model.Receita;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -16,13 +16,13 @@ import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 
-@Path("/pacientes")
+@Path("/receitas")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class PacienteResource {
+public class ReceitaResource {
 
     @Inject
-    private PacienteDao pacienteDao;
+    private ReceitaDao receitaDao;
 
     @Inject
     private ModelMapper modelMapper;
@@ -30,48 +30,48 @@ public class PacienteResource {
     @DELETE
     @Path("/{id}")
     public Response deletar(@PathParam("id") int id) throws EntidadeNaoEncontradaException, SQLException {
-        pacienteDao.deletar(id);
+        receitaDao.deletar(id);
         return Response.noContent().build(); // 204 No Content
     }
 
     @PUT
     @Path("/{id}")
-    public Response atualizar(@PathParam("id") int id, @Valid AtualizarPacienteDto dto)
+    public Response atualizar(@PathParam("id") int id, @Valid AtualizarReceitaDto dto)
             throws EntidadeNaoEncontradaException, SQLException {
-        Paciente paciente = modelMapper.map(dto, Paciente.class);
-        paciente.setIdPaciente(id);
-        pacienteDao.atualizar(paciente);
+        Receita receita = modelMapper.map(dto, Receita.class);
+        receita.setIdReceita(id);
+        receitaDao.atualizar(receita);
         return Response.ok().build();
     }
 
     @GET
     @Path("/{id}")
     public Response buscar(@PathParam("id") int id) throws SQLException, EntidadeNaoEncontradaException {
-        DetalhesPacienteDto dto = modelMapper.map(pacienteDao.buscar(id), DetalhesPacienteDto.class);
+        DetalhesReceitaDto dto = modelMapper.map(receitaDao.buscar(id), DetalhesReceitaDto.class);
         return Response.ok(dto).build();
     }
 
     @GET
-    public List<DetalhesPacienteDto> listar() throws SQLException {
-        return pacienteDao.listar().stream()
-                .map(p -> modelMapper.map(p, DetalhesPacienteDto.class))
+    public List<DetalhesReceitaDto> listar() throws SQLException {
+        return receitaDao.listar().stream()
+                .map(r -> modelMapper.map(r, DetalhesReceitaDto.class))
                 .toList();
     }
 
     @POST
-    public Response create(@Valid CadastroPacienteDto dto,
+    public Response create(@Valid CadastroReceitaDto dto,
                            @Context UriInfo uriInfo) throws SQLException {
 
-        Paciente paciente = modelMapper.map(dto, Paciente.class);
-        pacienteDao.cadastrar(paciente);
+        Receita receita = modelMapper.map(dto, Receita.class);
+        receitaDao.cadastrar(receita);
 
         // Constrói a URL para o recurso criado
         URI uri = uriInfo.getAbsolutePathBuilder()
-                .path(String.valueOf(paciente.getIdPaciente()))
+                .path(String.valueOf(receita.getIdReceita()))
                 .build();
 
         return Response.created(uri)
-                .entity(modelMapper.map(paciente, DetalhesPacienteDto.class))
+                .entity(modelMapper.map(receita, DetalhesReceitaDto.class))
                 .build(); // 201 Created
     }
 }
